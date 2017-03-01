@@ -1,0 +1,44 @@
+pipeline {
+    agent { docker 'python:3.5.1' }
+
+    stages {
+        stage('get-source') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/dubb-b/release-mgmt.git']]])
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'python --version'
+            }
+        }
+        stage('unit-test') {
+            steps {
+                sh 'python --version'
+            }
+        }
+        stage('integ-test') {
+            steps {
+                sh 'python --version'
+            }
+        }
+        stage('build-docs') {
+            steps {
+                sh 'python --version'
+            }
+        }
+        stage('publish') {
+            steps {
+                input "Does the staging environment look ok?"
+                sh 'python --version'
+            }
+        }
+    }
+post {
+    success {
+        slackSend channel: '#jenkins-test',
+                  color: 'good',
+                  message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
+    }
+}    
+}
