@@ -1,44 +1,206 @@
+def notifyStarted(String stageName) {
+  // send to Slack
+  slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})" + "\n  Stage -- " + stageName)
+
+  // send to email
+  emailext (
+      subject: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+      body: """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+      recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+    )
+}
+
+def notifySuccessful(String stageName) {
+  slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})" + "\n  Stage -- " + stageName)
+
+  emailext (
+      subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+      body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+      recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+    )
+}
+
+def notifyFailed(String stageName) {
+  slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})" + "\n  Stage -- " + stageName)
+
+  emailext (
+      subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+      body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+        <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+      recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+    )
+}
+
+def notifyInformation(String stageName) {
+  slackSend (color: '#0000FF', message: "This is some random information about the build...." + "\n  Stage -- " + stageName)
+}
+
+
 pipeline {
+   environment {
+      STAGE1 = "general-notification"
+      STAGE2 = 'get-source'
+      STAGE3 = 'compile'
+      STAGE4 = 'unit-test'
+      STAGE5 = 'integ-test'
+      STAGE6 = 'build-docs'
+      STAGE7 = 'publish'
+    }
     agent { docker 'python:3.5.1' }
 
+
     stages {
-        stage('get-source') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/dubb-b/release-mgmt.git']]])
+           stage('general-notifications') 
+            {
+              
+                steps 
+                  {
+                    notifyInformation("Starting the build....")
+                    sh 'python --version'                 
+                  }   
+                  
+                post
+                  {
+                    success
+                    {
+                      notifySuccessful("$STAGE1")
+                    }
+                    failure
+                    {
+                      notifyFailed("$STAGE1")
+                    }
+
+                  }
+                
             }
-        }
-        stage('build') {
-            steps {
-                sh 'python --version'
+
+           stage('get-source') 
+            {
+                steps 
+                  {
+                      notifyStarted("$STAGE2")
+                      notifyInformation("Starting the build....")
+
+                  }
+                 post
+                  {
+                    success
+                    {
+                      notifySuccessful("$STAGE2")
+                    }
+                    failure
+                    {
+                      notifyFailed("$STAGE2")
+                    }
+
+                  }            
             }
-        }
-        stage('unit-test') {
-            steps {
-                sh 'python --version'
+           stage('compile')  
+            {
+                steps 
+                  {
+                      notifyStarted("$STAGE3")
+                      notifyInformation("Starting the build....")
+                  }
+                post
+                  {
+                    success
+                    {
+                      notifySuccessful("$STAGE3")
+                    }
+                    failure
+                    {
+                      notifyFailed("$STAGE3")
+                    }
+
+                  }    
+                
             }
-        }
-        stage('integ-test') {
-            steps {
-                sh 'python --version'
+            stage('unit-test')  
+            {
+                steps 
+                  {
+                      notifyStarted("$STAGE4")
+                      notifyInformation("Starting the build....")
+                  } 
+                post
+                  {
+                    success
+                    {
+                      notifySuccessful("$STAGE4")
+                    }
+                    failure
+                    {
+                      notifyFailed("$STAGE4")
+                    }
+
+                  }
             }
-        }
-        stage('build-docs') {
-            steps {
-                sh 'python --version'
+            stage('integ-test') 
+            {
+                steps 
+                  {
+                      notifyStarted("$STAGE5")
+                      notifyInformation("Starting the build....")
+                  } 
+                post
+                  {
+                    success
+                    {
+                      notifySuccessful("$STAGE5")
+                    }
+                    failure
+                    {
+                      notifyFailed("$STAGE5")
+                    }
+
+                  }
             }
-        }
-        stage('publish') {
-            steps {
-                input "Does the staging environment look ok?"
-                sh 'python --version'
+            stage('build-docs')  
+            {
+                steps 
+                  {
+                      notifyStarted("$STAGE6")
+                      notifyInformation("Starting the build....")
+                  } 
+                post
+                  {
+                    success
+                    {
+                      notifySuccessful("$STAGE6")
+                    }
+                    failure
+                    {
+                      notifyFailed("$STAGE6")
+                    }
+
+                  }
             }
-        }
-    }
-post {
-    success {
-        slackSend channel: '#jenkins-test',
-                  color: 'good',
-                  message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
-    }
-}    
+            stage('publish')  
+            {
+                steps 
+                {
+                      notifyStarted("$STAGE7")
+                      notifyInformation("Starting the build....")
+                      timeout(time: 60, unit: 'SECONDS')  
+                          {
+                              input "Are you ready to continue???" 
+                          }
+                }
+                post
+                  {
+                    success
+                    {
+                      notifySuccessful("$STAGE7")
+                    }
+                    failure
+                    {
+                      notifyFailed("$STAGE7")
+                    }
+
+                  }
+            }
+          }
 }
