@@ -1,3 +1,6 @@
+#Defining the OS's that we will run on.
+#Currently all is being built with CentOS, will extend as needed.
+
 {% if grains['os_family'] == 'RedHat'%}
 include:
   - base.cent

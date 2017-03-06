@@ -1,4 +1,8 @@
-# Completely ignore non-RHEL based systems
+# Completely ignore non-RHEL based systems at the moment
+# This will setup Jenkins via the YUM process described on their website.
+# /TODO will add support for other OS's
+#
+#
 {% if grains['os_family'] == 'RedHat' %}
 
 validate_jenkins_repo_gone:
@@ -33,5 +37,10 @@ install_jenkins:
       - jenkins
     - require:
       - file: install_jenkins_repo
+    - allow_updates: False
+
+jenkins:
+  service.running:
+    - enable: True 
 
 {% endif %}
