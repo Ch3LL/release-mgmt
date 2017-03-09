@@ -8,17 +8,21 @@ validate_jenkins_repo_gone:
   file.absent:
     - name: /etc/yum.repos.d/jenkins.repo
 
-jenkins_release:
+jenkins_repo:
   pkgrepo.managed:
     - humanname: jenkins
-    - base_url: http://pkg.jenkins.io/redhat
+    - baseurl: http://pkg.jenkins.io/redhat
     - gpgcheck: 1
     - key_url: https://jenkins-ci.org/redhat/jenkins-ci.org.key
+    - refresh_db: True
+    - enabled: True
 
 install_jenkins:
   pkg.installed:
     - pkgs:
       - jenkins
+    -require:
+      - file jenkins_repo
 
 jenkins:
   service.running:
