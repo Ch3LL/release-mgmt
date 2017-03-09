@@ -10,9 +10,10 @@ validate_jenkins_repo_gone:
 
 jenkins_release:
   pkgrepo.managed:
-    - humanname: Jenkins Release Repo
-    - mirrorlist: https://pkg.jenkins.io/redhat-stable/jenkins.repo
-    - key_url: https://pkg.jenkins.io/redhat/jenkins.io.key
+    - humanname: jenkins
+    - base_url: http://pkg.jenkins.io/redhat
+    - gpgcheck: 1
+    - key_url: https://jenkins-ci.org/redhat/jenkins-ci.org.key
 
 install_jenkins:
   pkg.installed:
