@@ -6,7 +6,7 @@
 
 validate_jenkins_repo_gone:
   file.absent:
-    - name: /etc/yum.repos.d/jenkins_release.repo
+    - name: /etc/yum.repos.d/jenkins.repo
 
 jenkins_release:
   pkgrepo.managed:
