@@ -21,7 +21,7 @@ install_jenkins:
   pkg.installed:
     - pkgs:
       - jenkins
-    -require:
+    - require:
       - file jenkins_repo
 
 jenkins:
