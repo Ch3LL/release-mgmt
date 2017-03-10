@@ -1,5 +1,3 @@
-{% if grains['os_family'] == 'RedHat'%}
-{% if pillar['server_tier'] == 'dev'%}
 docker.package:
   pkg.installed:
     - pkgs:
@@ -20,9 +18,3 @@ docker:
   service.running:
     - enable: True
     - reload: True
-
-
-{% endif %}
-{% endif %}
-
-

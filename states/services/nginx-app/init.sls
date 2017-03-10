@@ -1,5 +1,3 @@
-{% if grains['os_family'] == 'RedHat'%}
-{% if pillar['server_tier'] == 'dev'%}
 nginx.package:
   pkg.installed:
     - pkgs:
@@ -18,9 +16,3 @@ configure_nginx_jenkins:
     - user: root
     - group: root
     - mode: 644
-
-
-{% endif %}
-{% endif %}
-
-

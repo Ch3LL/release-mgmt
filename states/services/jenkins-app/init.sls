@@ -1,9 +1,6 @@
 # Completely ignore non-RHEL based systems at the moment
 # This will setup Jenkins via the YUM process described on their website.
 #
-{% if pillar['server_tier'] == 'dev'%}
-{% if grains['os_family'] == 'RedHat' %}
-
 validate_jenkins_repo_gone:
   file.absent:
     - name: /etc/yum.repos.d/jenkins_release.repo
@@ -25,6 +22,3 @@ install_jenkins:
 jenkins:
   service.running:
     - enable: True 
-
-{% endif %}
-{% endif %}
