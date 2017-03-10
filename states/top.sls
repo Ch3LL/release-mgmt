@@ -10,18 +10,14 @@ dev:
     - services.docker-app
     - services.jenkins-app
 
-{% endif %}
-
-{% if pillar['server_tier'] == 'test'%}
+{% elif pillar['server_tier'] == 'test'%}
 
 test:
   '*test*':
     - services.nginx-app
     - services.jenkins-app
 
-{% endif %}
-
-{% if pillar['server_tier'] == 'prod'%}
+{% elif pillar['server_tier'] == 'prod'%}
 
 prod:
   '*prod*':
