@@ -2,15 +2,13 @@
 dev:
   '*':
     - dev
-{% endif %}
 
-{% if 'test' in grains['id'] %}
+{% elif 'test' in grains['id'] %}
 test:
   '*':
     - test
-{% endif %}
 
-{% if 'prod' in grains['id'] %}
+{% elif 'prod' in grains['id'] %}
 prod:
   '*':
     - prod
