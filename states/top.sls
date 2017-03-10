@@ -11,6 +11,7 @@ base:
 dev:
   '*':
     - services.nginx-app
+    - services.docker-app
     - services.jenkins-app
 
 {% endif %}
